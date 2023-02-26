@@ -12,3 +12,12 @@ services:
       MYSQL_PASSWORD: root
       MYSQL_ROOT_PASSWORD: root
       TZ: "Asia/Tokyo"
+  localstack:
+    image: localstack/localstack:latest
+    environment:
+      - DEFAULT_REGION=ap-northeast-1
+      - DATA_DIR=/var/lib/localstack/data
+    volumes:
+      - ./localstack:/var/lib/localstack
+    ports:
+      - 4566:4566

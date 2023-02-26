@@ -19,9 +19,12 @@
   <div class="jumbotron">
     <div class="container">
       <h1 class="display-4">～温泉口コミサイト 湯ったり♨～</h1>
-      <p>全国各地の温泉を巡ったら、想い出と共に口コミを記載して楽しみましょう。他者と共有することも、自分だけの日記にすることもできます。</p>
+      <p>全国各地の温泉を巡ったら、想い出と共に口コミを投稿して楽しみましょう。他者と共有することも、自分だけの日記にすることもできます。</p>
       <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
     </div>
+  </div>
+  <div class="container">
+    <p><a class="btn btn-primary btn-lg" href="/register/init" role="button">温泉を登録する</a></p>
   </div>
 
   <div class="container" style="display: flex;">
@@ -29,7 +32,7 @@
     <div class="row">
       <div class="col-md-4" th:each="element, stat: ${hotSpringList}">
         <h2 th:text="${element.hotSpringName}"></h2>
-        <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+        <p th:text="${element.hotSpringConcept}"></p>
         <p><a class="btn btn-secondary" href="#" role="button">詳細を見る &raquo;</a></p>
       </div>
     </div>

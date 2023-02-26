@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.hotspring.domain.service.HotSpringService;
-import com.hotspring.entity.MHotSpring;
+import com.hotspring.entity.MHotSpringEntity;
 
 @Controller
 public class TopController {
@@ -19,7 +19,7 @@ public class TopController {
 	@GetMapping(value = "top")
 	public String init(Model model) {
 		
-		List<MHotSpring> hotSpringList = 
+		List<MHotSpringEntity> hotSpringList = 
 				hotSpringService.selectHotspring();
 		
 		model.addAttribute("hotSpringList", hotSpringList);
