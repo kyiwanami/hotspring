@@ -7,16 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.util.IOUtils;
+import lombok.extern.slf4j.Slf4j;
+import software.amazon.awssdk.awscore.exception.AwsServiceException;
+import software.amazon.awssdk.core.exception.SdkClientException;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Service
+@Slf4j
 public class AwsService {
 
 	@Autowired
-	private AmazonS3 amazonS3;
+	private S3Client s3Client;
 
 	@Value("${aws.s3.bucket}")
 	private String bucket;
@@ -33,17 +37,27 @@ public class AwsService {
 	 */
 	public byte[] getObject(String key) throws IOException {
 
-		S3Object object = amazonS3.getObject(bucket, String.format(keypattern, key));
-		return IOUtils.toByteArray(object.getObjectContent());
+		GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucket).key(key).build();
+
+		return s3Client.getObject(getObjectRequest).readAllBytes();
 	}
 
 	/**
 	 * S3にオブジェクトを配置する.
 	 * 
+	 * @throws IOException
 	 */
-	public void putObject(String key, InputStream stream) {
+	public void putObject(String key, InputStream stream) throws IOException {
 
-		amazonS3.putObject(bucket, String.format(keypattern, key), stream, new ObjectMetadata());
+		PutObjectRequest objectRequest = PutObjectRequest.builder().bucket(bucket).key(key).build();
+
+		try {
+			s3Client.putObject(objectRequest, RequestBody.fromBytes(stream.readAllBytes()));
+		} catch (AwsServiceException | SdkClientException | IOException e) {
+
+			log.error("S3アップロードに失敗しました。");
+			throw e;
+		}
 	}
 
 }

@@ -1,30 +1,27 @@
 package com.hotspring.config;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
 public class AwsConfig {
-
-	private static final String REGION = "ap-northeast-1";
 
 	@Value("${aws.s3.endpoint-url}")
 	private String endpointUrl;
 
 	@Bean
-	public AmazonS3 amazonS3() {
+	public S3Client s3Client() {
 
-		EndpointConfiguration endpointConfiguration = new EndpointConfiguration(endpointUrl, REGION);
+		S3Client s3Client = S3Client.builder().region(Region.AP_NORTHEAST_1).endpointOverride(URI.create(endpointUrl))
+				.forcePathStyle(true).build();
 
-		final AmazonS3 client = AmazonS3ClientBuilder.standard().withEndpointConfiguration(endpointConfiguration)
-				.build();
-
-		return client;
+		return s3Client;
 	}
 
 }
