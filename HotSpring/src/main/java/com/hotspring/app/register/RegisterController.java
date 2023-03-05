@@ -13,12 +13,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.hotspring.app.auth.UserBean;
 import com.hotspring.domain.model.HotSpringEvaluationData;
 import com.hotspring.domain.service.HotSpringService;
 
 @Controller
 @RequestMapping(value = "/register")
 public class RegisterController {
+
+	@Autowired
+	private UserBean userBean;
 
 	@Autowired
 	private HotSpringService hotSpringService;
