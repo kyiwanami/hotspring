@@ -13,8 +13,14 @@ import lombok.Data;
 public class MUserEntity {
 
 	@Id
+	@Column(name = "SUB")
+	private String sub;
+
 	@Column(name = "USER_NAME")
 	private String userName;
+
+	@Column(name = "EMAIL_ADDRESS")
+	private String emailAddress;
 
 	@Column(name = "OPEN_FLAG")
 	private String openFlag;

@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.hotspring.entity.MUserEntity;
 
 @Repository
-public interface MUSerRepository extends JpaRepository<MUserEntity, Integer> {
+public interface MUSerRepository extends JpaRepository<MUserEntity, String> {
 
 }

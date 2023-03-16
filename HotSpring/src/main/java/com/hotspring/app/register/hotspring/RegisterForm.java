@@ -1,4 +1,4 @@
-package com.hotspring.app.register;
+package com.hotspring.app.register.hotspring;
 
 import java.util.Date;
 

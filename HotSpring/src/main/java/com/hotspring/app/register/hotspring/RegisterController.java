@@ -1,4 +1,4 @@
-package com.hotspring.app.register;
+package com.hotspring.app.register.hotspring;
 
 import java.io.IOException;
 
@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.hotspring.app.auth.UserBean;
+import com.hotspring.app.login.LoginForm;
 import com.hotspring.domain.model.HotSpringEvaluationData;
+import com.hotspring.domain.model.UserBean;
 import com.hotspring.domain.service.HotSpringService;
 
 @Controller
@@ -30,7 +31,7 @@ public class RegisterController {
 	@GetMapping(value = "/init")
 	public String init(Model model) {
 
-		model.addAttribute("registerForm", new RegisterForm());
+		model.addAttribute("loginForm", new LoginForm());
 
 		return "register/register";
 	}

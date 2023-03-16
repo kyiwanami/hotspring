@@ -18,21 +18,21 @@
   <!-- Main jumbotron for a primary marketing message or call to action -->
   <div class="jumbotron">
     <div class="container">
-      <h1 class="display-4">ユーザー登録</h1>
+      <h1 class="display-4">ログイン</h1>
     </div>
   </div>
 
-  <form th:object="${authForm}" method="post">
+  <form th:object="${loginForm}" method="post">
       <div class="container" style="display: flex;">
         <div>
-          <h4 th:text="ユーザー名"></h4><input type="text" th:field="*{userName}">
+          <h4>メールアドレス></h4><input type="text" th:field="*{emailAddress}">
         </div>
         <div>
-          <h4 th:text="パスワード"></h4><input type="text" th:field="*{password}">
+          <h4>パスワード</h4><input type="text" th:field="*{password}">
         </div>
       </div> <!-- /container -->
-      <button type="submit" formaction="/auth/create">登録する!</button>
-      <button type="submit" formaction="/auth/auth">認証する!</button>
+      <button type="submit" formaction="/login/auth">ログイン</button>
+      <a href="/register/user/init">ユーザー新規登録</a>
   </form >
 
 </main>

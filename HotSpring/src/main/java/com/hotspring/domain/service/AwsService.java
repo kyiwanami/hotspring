@@ -5,16 +5,17 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.model.AdminCreateUserRequest;
+import com.amazonaws.services.cognitoidp.model.AdminCreateUserResult;
 import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthRequest;
-import com.amazonaws.services.cognitoidp.model.AdminInitiateAuthResult;
-import com.amazonaws.services.cognitoidp.model.AdminRespondToAuthChallengeRequest;
 import com.amazonaws.services.cognitoidp.model.AuthFlowType;
+import com.hotspring.domain.model.UserData;
 
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
@@ -79,46 +80,22 @@ public class AwsService {
 	}
 
 	/**
-	 * ユーザーを作成する.
+	 * ユーザーを仮作成する.
 	 * 
-	 * @param userName ユーザー名
-	 * @param password パスワード
-	 * @throws Exception
+	 * @param userData ユーザーデータ
 	 */
-	public void createUser(String userName, String password) throws Exception {
+	public String adminCreateUser(UserData userData) {
 
-		try {
-			// ユーザー登録
-			AdminCreateUserRequest adminCreateUserRequest = new AdminCreateUserRequest();
-			adminCreateUserRequest.withUserPoolId(cognitiUserPoolId).withUsername(userName)
-					.withTemporaryPassword(password);
-			cognitoClient.adminCreateUser(adminCreateUserRequest);
+		// ユーザー登録リクエスト
+		AdminCreateUserRequest adminCreateUserRequest = new AdminCreateUserRequest();
+		adminCreateUserRequest.withUserPoolId(cognitiUserPoolId).withUsername(userData.getEmailAddress());
 
-			// トークン取得
-			Map<String, String> authParameters = new HashMap<>();
-			authParameters.put("USERNAME", userName);
-			authParameters.put("PASSWORD", password);
+		// ユーザー登録リクエスト送信
+		AdminCreateUserResult result = cognitoClient.adminCreateUser(adminCreateUserRequest);
+		String sub = result.getUser().getAttributes().stream().filter(attr -> StringUtils.equals(attr.getName(), "sub"))
+				.findFirst().orElseThrow().getValue();
 
-			AdminInitiateAuthRequest adminInitiateAuthRequest = new AdminInitiateAuthRequest();
-			adminInitiateAuthRequest.withAuthFlow(AuthFlowType.ADMIN_NO_SRP_AUTH).withUserPoolId(cognitiUserPoolId)
-					.withClientId(cognitoClientId).withAuthParameters(authParameters);
-
-			AdminInitiateAuthResult initResult = cognitoClient.adminInitiateAuth(adminInitiateAuthRequest);
-
-			// 一時パスワード更新
-			Map<String, String> challengeResponses = new HashMap<>();
-			challengeResponses.put("USERNAME", userName);
-			challengeResponses.put("NEW_PASSWORD", password);
-
-			AdminRespondToAuthChallengeRequest request = new AdminRespondToAuthChallengeRequest();
-			request.withChallengeName(initResult.getChallengeName()).withUserPoolId(cognitiUserPoolId)
-					.withClientId(cognitoClientId).withSession(initResult.getSession())
-					.withChallengeResponses(challengeResponses);
-
-		} catch (Exception e) {
-			log.error("Cognitoユーザー登録に失敗しました。");
-			throw e;
-		}
+		return sub;
 	}
 
 	/**

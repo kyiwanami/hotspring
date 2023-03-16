@@ -1,4 +1,4 @@
-package com.hotspring.app.auth;
+package com.hotspring.domain.model;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
